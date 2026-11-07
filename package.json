@@ -1,10 +1,11 @@
+
 {
   "name": "iphone-shop",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Hai Apple Store",
+  "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/index.js"
   },
   "keywords": [],
   "author": "",

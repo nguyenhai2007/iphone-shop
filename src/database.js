@@ -8,7 +8,10 @@ const Database = require("better-sqlite3");
 const path = require("path");
 const bcrypt = require("bcryptjs");
 
-const dbPath = path.join(__dirname, "iphone-shop.db");
+// Lưu database vào ổ đĩa riêng khi triển khai
+const dbDirectory = process.env.DATA_DIR || __dirname;
+
+const dbPath = path.join(dbDirectory, "iphone-shop.db");
 const db = new Database(dbPath);
 
 // ============================================
@@ -296,8 +299,14 @@ const existingAdmin = db.prepare(`
 `).get(adminEmail);
 
 if (!existingAdmin) {
+    const adminPassword = process.env.ADMIN_PASSWORD;
+
+    if (!adminPassword) {
+        throw new Error("Chưa cấu hình ADMIN_PASSWORD!");
+    }
+
     const hashedPassword = bcrypt.hashSync(
-        "Admin123456",
+        adminPassword,
         10
     );
 

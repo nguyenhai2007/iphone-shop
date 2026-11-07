@@ -1048,11 +1048,10 @@ app.use((error, req, res, next) => {
 // ============================================
 // KHỞI ĐỘNG SERVER
 // ============================================
-
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
     console.log("=================================");
     console.log("HẢI APPLE STORE");
-    console.log(`Server: http://localhost:${PORT}`);
+    console.log(`Server đang chạy tại cổng ${PORT}`);
     console.log("Backend đang hoạt động!");
     console.log("=================================");
 });
