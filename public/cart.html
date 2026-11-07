@@ -1,0 +1,132 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Giỏ hàng | Hải Apple Store</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="site-header">
+        <div class="container header-inner">
+
+            <a href="index.html" class="logo">
+                HẢI <span>APPLE</span>
+            </a>
+
+            <nav class="main-nav">
+                <a href="index.html">Trang chủ</a>
+                <a href="index.html#products">iPhone</a>
+                <a href="orders.html">Đơn hàng</a>
+                <a href="login.html" id="account-link">Tài khoản</a>
+            </nav>
+
+            <a href="cart.html" class="cart-link">
+                Giỏ hàng
+                <span id="cart-count">0</span>
+            </a>
+
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="container cart-container">
+
+        <div class="page-heading">
+            <p class="section-label">HẢI APPLE STORE</p>
+            <h1>Giỏ hàng của bạn</h1>
+            <p>Kiểm tra sản phẩm trước khi tiến hành thanh toán.</p>
+        </div>
+
+        <div class="cart-layout">
+
+            <!-- DANH SÁCH SẢN PHẨM -->
+            <section class="cart-products">
+
+                <div class="cart-section-heading">
+                    <h2>Sản phẩm đã chọn</h2>
+                    <a href="index.html">Tiếp tục mua sắm</a>
+                </div>
+
+                <div id="cart-items">
+                    <p class="loading-products">
+                        Đang tải giỏ hàng...
+                    </p>
+                </div>
+
+                <div id="empty-cart" hidden>
+                    <div class="empty-cart-icon">🛒</div>
+                    <h3>Giỏ hàng đang trống</h3>
+                    <p>Hãy chọn sản phẩm iPhone bạn yêu thích.</p>
+
+                    <a href="index.html" class="btn-primary">
+                        Khám phá sản phẩm
+                    </a>
+                </div>
+
+            </section>
+
+            <!-- TỔNG THANH TOÁN -->
+            <aside class="cart-summary">
+
+                <h2>Tóm tắt đơn hàng</h2>
+
+                <div class="cart-summary-row">
+                    <span>Tạm tính</span>
+                    <strong id="subtotal-price">0đ</strong>
+                </div>
+
+                <div class="cart-summary-row">
+                    <span>Phí vận chuyển</span>
+                    <strong>Miễn phí</strong>
+                </div>
+
+                <div class="cart-summary-divider"></div>
+
+                <div class="cart-total">
+                    <span>Tổng cộng</span>
+                    <strong id="total-price">0đ</strong>
+                </div>
+
+                <p class="cart-note">
+                    Giá đã bao gồm các khoản phí được hiển thị.
+                </p>
+
+                <a href="checkout.html"
+                   id="checkout-button"
+                   class="btn-primary checkout-button">
+                    Tiến hành thanh toán
+                </a>
+
+                <a href="index.html"
+                   class="btn-secondary continue-button">
+                    Tiếp tục mua sắm
+                </a>
+
+                <div class="cart-security">
+                    <span>🔒</span>
+                    <p>Thông tin đơn hàng được bảo mật.</p>
+                </div>
+
+            </aside>
+
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+        <div class="container footer-bottom">
+            <p>© 2026 Hải Apple Store. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/cart.js"></script>
+
+</body>
+</html>

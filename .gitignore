@@ -1,0 +1,11 @@
+@"
+node_modules/
+.env
+.env.*
+!.env.example
+*.db
+*.sqlite
+*.sqlite3
+npm-debug.log*
+"@ | Set-Content -Path .gitignore -Encoding utf8
+*.db-*

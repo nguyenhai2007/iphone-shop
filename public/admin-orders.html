@@ -1,0 +1,123 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ffffff">
+
+    <title>Quản lý đơn hàng | Hải Apple Store</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="container header-inner">
+
+            <a href="index.html" class="logo">
+                HẢI <span>APPLE</span>
+            </a>
+
+            <nav class="main-nav">
+                <a href="index.html">Trang chủ</a>
+                <a href="admin.html">Quản lý sản phẩm</a>
+                <a href="admin-orders.html" class="active">
+                    Quản lý đơn hàng
+                </a>
+            </nav>
+
+            <button id="logoutButton" class="btn-secondary">
+                Đăng xuất
+            </button>
+
+        </div>
+    </header>
+
+    <main class="container admin-container">
+
+        <div class="page-heading">
+            <p class="section-label">HẢI APPLE STORE / ADMIN</p>
+            <h1>Quản lý đơn hàng</h1>
+            <p>Theo dõi doanh thu và xử lý đơn hàng của khách.</p>
+        </div>
+
+        <!-- THỐNG KÊ -->
+        <section id="orderStatistics" class="admin-statistics">
+            <div class="loading-products">
+                Đang tải thống kê...
+            </div>
+        </section>
+
+        <!-- BIỂU ĐỒ -->
+        <section class="admin-section">
+
+            <div class="admin-section-heading">
+                <div>
+                    <h2>Thống kê doanh thu</h2>
+                    <p>Tổng quan hoạt động kinh doanh.</p>
+                </div>
+            </div>
+
+            <div class="admin-chart-container">
+                <canvas id="revenueChart"></canvas>
+            </div>
+
+        </section>
+
+        <!-- DANH SÁCH ĐƠN HÀNG -->
+        <section class="admin-section">
+
+            <div class="admin-section-heading">
+                <div>
+                    <h2>Danh sách đơn hàng</h2>
+                    <p>Kiểm tra và cập nhật trạng thái đơn hàng.</p>
+                </div>
+
+                <button id="refreshOrders" class="btn-secondary">
+                    ↻ Làm mới
+                </button>
+            </div>
+
+            <!-- BỘ LỌC -->
+            <div class="admin-filter">
+
+                <input
+                    type="search"
+                    id="orderSearch"
+                    placeholder="Tìm theo mã đơn hoặc số điện thoại..."
+                >
+
+                <select id="statusFilter">
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="Đang xử lý">Đang xử lý</option>
+                    <option value="Đã xác nhận">Đã xác nhận</option>
+                    <option value="Đang giao hàng">Đang giao hàng</option>
+                    <option value="Đã giao hàng">Đã giao hàng</option>
+                    <option value="Đã hủy">Đã hủy</option>
+                </select>
+
+            </div>
+
+            <!-- ĐƠN HÀNG -->
+            <div id="adminOrders">
+                <p class="loading-products">
+                    Đang tải danh sách đơn hàng...
+                </p>
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-bottom">
+            <p>© 2026 Hải Apple Store. Khu vực quản trị.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/admin-orders.js"></script>
+
+</body>
+</html>

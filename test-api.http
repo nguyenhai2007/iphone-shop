@@ -1,0 +1,19 @@
+
+### Kiểm tra đăng ký
+POST http://localhost:3000/api/register
+Content-Type: application/json
+
+{
+    "name": "Hai Nguyen",
+    "email": "hai@example.com",
+    "password": "12345678"
+}
+
+### Kiểm tra đăng nhập
+POST http://localhost:3000/api/login
+Content-Type: application/json
+
+{
+    "email": "hai@example.com",
+    "password": "12345678"
+}

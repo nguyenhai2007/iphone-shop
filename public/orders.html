@@ -1,0 +1,99 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Đơn hàng của tôi | Hải Apple Store</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="site-header">
+        <div class="container header-inner">
+
+            <a href="index.html" class="logo">
+                HẢI <span>APPLE</span>
+            </a>
+
+            <nav class="main-nav">
+                <a href="index.html">Trang chủ</a>
+                <a href="index.html#products">iPhone</a>
+                <a href="orders.html" class="active">Đơn hàng</a>
+                <a href="login.html" id="account-link">Tài khoản</a>
+            </nav>
+
+            <a href="cart.html" class="cart-link">
+                Giỏ hàng
+                <span id="cart-count">0</span>
+            </a>
+
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="container orders-container">
+
+        <div class="page-heading">
+            <p class="section-label">HẢI APPLE STORE</p>
+            <h1>Lịch sử đơn hàng</h1>
+            <p>Theo dõi và quản lý những đơn hàng bạn đã đặt.</p>
+        </div>
+
+        <!-- THÔNG TIN -->
+        <section class="orders-overview">
+
+            <div class="orders-overview-card">
+                <span class="overview-icon">📦</span>
+                <div>
+                    <strong>Đơn hàng của bạn</strong>
+                    <p>Quản lý các đơn mua hàng tại đây.</p>
+                </div>
+            </div>
+
+            <a href="index.html" class="btn-primary">
+                Tiếp tục mua sắm
+            </a>
+
+        </section>
+
+        <!-- DANH SÁCH ĐƠN HÀNG -->
+        <section class="orders-section">
+
+            <div class="orders-heading">
+                <div>
+                    <h2>Đơn hàng gần đây</h2>
+                    <p>Thông tin và trạng thái đơn hàng.</p>
+                </div>
+
+                <button id="refresh-orders" class="btn-secondary">
+                    ↻ Làm mới
+                </button>
+            </div>
+
+            <div id="ordersList">
+
+                <div class="loading-products">
+                    Đang tải đơn hàng...
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+        <div class="container footer-bottom">
+            <p>© 2026 Hải Apple Store. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/orders.js"></script>
+
+</body>
+</html>
