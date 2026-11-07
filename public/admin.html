@@ -4,166 +4,224 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Quản trị hệ thống | Hải Apple Store</title>
-
     <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .admin-product-form {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .admin-product-form .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .admin-product-form input,
+        .admin-product-form select,
+        .admin-product-form textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font: inherit;
+        }
+
+        .admin-product-form textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .admin-product-form .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .admin-product-form .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .admin-product-form .checkbox-group input {
+            width: auto;
+        }
+
+        .admin-form-actions {
+            grid-column: 1 / -1;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 650px) {
+            .admin-product-form {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-product-form .full-width,
+            .admin-form-actions {
+                grid-column: 1;
+            }
+        }
+    </style>
 </head>
 <body>
 
-    <!-- HEADER -->
-    <header class="site-header">
-        <div class="container header-inner">
+<header class="site-header">
+    <div class="container header-inner">
+        <a href="index.html" class="logo">
+            HẢI <span>APPLE</span>
+        </a>
 
-            <a href="index.html" class="logo">
-                HẢI <span>APPLE</span>
-            </a>
+        <nav class="main-nav">
+            <a href="index.html">Trang chủ</a>
+            <a href="admin.html" class="active">Quản lý sản phẩm</a>
+            <a href="admin-orders.html">Quản lý đơn hàng</a>
+        </nav>
 
-            <nav class="main-nav">
-                <a href="index.html">Trang chủ</a>
-                <a href="admin.html" class="active">Quản lý sản phẩm</a>
-                <a href="admin-orders.html">Quản lý đơn hàng</a>
-            </nav>
+        <button id="logoutButton" class="btn-secondary">
+            Đăng xuất
+        </button>
+    </div>
+</header>
 
-            <button id="logoutButton" class="btn-secondary">
-                Đăng xuất
-            </button>
+<main class="container admin-container">
 
+    <div class="page-heading">
+        <p class="section-label">HẢI APPLE STORE / ADMIN</p>
+        <h1>Trung tâm quản trị</h1>
+        <p>Quản lý sản phẩm và hoạt động kinh doanh.</p>
+    </div>
+
+    <section class="admin-overview">
+        <div class="admin-overview-card">
+            <span class="overview-icon">📱</span>
+            <div><p>Quản lý</p><h3>Sản phẩm</h3></div>
         </div>
-    </header>
 
-    <!-- MAIN -->
-    <main class="container admin-container">
-
-        <div class="page-heading">
-            <p class="section-label">HẢI APPLE STORE / ADMIN</p>
-            <h1>Trung tâm quản trị</h1>
-            <p>Quản lý sản phẩm và hoạt động kinh doanh.</p>
+        <div class="admin-overview-card">
+            <span class="overview-icon">📦</span>
+            <div><p>Quản lý</p><h3>Kho hàng</h3></div>
         </div>
 
-        <!-- TỔNG QUAN -->
-        <section class="admin-overview">
+        <div class="admin-overview-card">
+            <span class="overview-icon">🛍️</span>
+            <div><p>Quản lý</p><h3>Đơn hàng</h3></div>
+        </div>
+    </section>
 
-            <div class="admin-overview-card">
-                <span class="overview-icon">📱</span>
-                <div>
-                    <p>Quản lý</p>
-                    <h3>Sản phẩm</h3>
-                </div>
+    <section class="admin-section">
+        <div class="admin-section-heading">
+            <div>
+                <h2 id="product-form-title">Thêm sản phẩm mới</h2>
+                <p>Nhập đầy đủ thông tin sản phẩm iPhone.</p>
+            </div>
+        </div>
+
+        <form id="productForm" class="admin-product-form">
+
+            <input type="hidden" id="productId">
+
+            <div class="form-group">
+                <label for="productName">Tên sản phẩm *</label>
+                <input type="text" id="productName"
+                       placeholder="Ví dụ: iPhone 17 Pro Max"
+                       required>
             </div>
 
-            <div class="admin-overview-card">
-                <span class="overview-icon">📦</span>
-                <div>
-                    <p>Quản lý</p>
-                    <h3>Kho hàng</h3>
-                </div>
+            <div class="form-group">
+                <label for="productPrice">Giá bán (VNĐ) *</label>
+                <input type="number" id="productPrice"
+                       min="0" placeholder="34990000" required>
             </div>
 
-            <div class="admin-overview-card">
-                <span class="overview-icon">🛍️</span>
-                <div>
-                    <p>Quản lý</p>
-                    <h3>Đơn hàng</h3>
-                </div>
+            <div class="form-group">
+                <label for="productOriginalPrice">Giá gốc (VNĐ)</label>
+                <input type="number" id="productOriginalPrice"
+                       min="0" placeholder="36990000">
             </div>
 
-        </section>
-
-        <!-- FORM SẢN PHẨM -->
-        <section class="admin-section">
-
-            <div class="admin-section-heading">
-                <div>
-                    <h2 id="product-form-title">Thêm sản phẩm mới</h2>
-                    <p>Nhập thông tin sản phẩm iPhone.</p>
-                </div>
+            <div class="form-group">
+                <label for="productCategory">Danh mục</label>
+                <select id="productCategory">
+                    <option value="iPhone">iPhone</option>
+                    <option value="iPad">iPad</option>
+                    <option value="MacBook">MacBook</option>
+                    <option value="Apple Watch">Apple Watch</option>
+                    <option value="Phụ kiện">Phụ kiện</option>
+                </select>
             </div>
 
-            <form id="productForm" class="admin-product-form">
+            <div class="form-group">
+                <label for="productStock">Số lượng tồn kho</label>
+                <input type="number" id="productStock"
+                       min="0" value="100">
+            </div>
 
-                <input type="hidden" id="productId">
+            <div class="form-group">
+                <label for="productImage">Đường dẫn hình ảnh</label>
+                <input type="text" id="productImage"
+                       placeholder="images/iphone.png">
+            </div>
 
-                <div class="form-group">
-                    <label for="productName">Tên sản phẩm</label>
-                    <input type="text"
-                           id="productName"
-                           placeholder="Ví dụ: iPhone 17 Pro Max"
-                           required>
-                </div>
+            <div class="form-group full-width">
+                <label for="productDescription">
+                    Mô tả và thông số kỹ thuật
+                </label>
+                <textarea id="productDescription"
+                    placeholder="Ví dụ:&#10;Dung lượng: 256GB&#10;Màu sắc: Titan tự nhiên&#10;Màn hình: Super Retina XDR&#10;Chip: A17 Pro&#10;Camera: 48MP&#10;Pin: ...&#10;Bảo hành: ..."></textarea>
+            </div>
 
-                <div class="form-group">
-                    <label for="productPrice">Giá bán (VNĐ)</label>
-                    <input type="number"
-                           id="productPrice"
-                           min="0"
-                           placeholder="Ví dụ: 34990000"
-                           required>
-                </div>
+            <div class="form-group full-width checkbox-group">
+                <input type="checkbox" id="productFeatured">
+                <label for="productFeatured">Đánh dấu sản phẩm nổi bật</label>
+            </div>
 
-                <div class="form-group">
-                    <label for="productImage">Đường dẫn hình ảnh</label>
-                    <input type="text"
-                           id="productImage"
-                           placeholder="images/iphone.png">
-                </div>
+            <div class="admin-form-actions">
+                <button type="submit" id="saveButton" class="btn-primary">
+                    Thêm sản phẩm
+                </button>
 
-                <div class="admin-form-actions">
-
-                    <button type="submit"
-                            id="saveButton"
-                            class="btn-primary">
-                        Thêm sản phẩm
-                    </button>
-
-                    <button type="button"
-                            id="cancelButton"
-                            class="btn-secondary"
-                            hidden>
-                        Hủy chỉnh sửa
-                    </button>
-
-                </div>
-
-            </form>
-
-        </section>
-
-        <!-- DANH SÁCH SẢN PHẨM -->
-        <section class="admin-section">
-
-            <div class="admin-section-heading">
-                <div>
-                    <h2>Danh sách sản phẩm</h2>
-                    <p>Quản lý, cập nhật và xóa sản phẩm.</p>
-                </div>
-
-                <button id="refreshProducts"
-                        class="btn-secondary">
-                    ↻ Làm mới
+                <button type="button" id="cancelButton"
+                        class="btn-secondary" hidden>
+                    Hủy chỉnh sửa
                 </button>
             </div>
 
-            <div id="adminProducts">
+        </form>
+    </section>
 
-                <p class="loading-products">
-                    Đang tải danh sách sản phẩm...
-                </p>
-
+    <section class="admin-section">
+        <div class="admin-section-heading">
+            <div>
+                <h2>Danh sách sản phẩm</h2>
+                <p>Quản lý, cập nhật và xóa sản phẩm.</p>
             </div>
 
-        </section>
-
-    </main>
-
-    <!-- FOOTER -->
-    <footer class="site-footer">
-        <div class="container footer-bottom">
-            <p>© 2026 Hải Apple Store. Khu vực quản trị.</p>
+            <button id="refreshProducts" class="btn-secondary">
+                ↻ Làm mới
+            </button>
         </div>
-    </footer>
 
-    <script src="js/admin.js"></script>
+        <div id="adminProducts">
+            <p class="loading-products">
+                Đang tải danh sách sản phẩm...
+            </p>
+        </div>
+    </section>
+
+</main>
+
+<footer class="site-footer">
+    <div class="container footer-bottom">
+        <p>© 2026 Hải Apple Store. Khu vực quản trị.</p>
+    </div>
+</footer>
+
+<script src="js/admin.js"></script>
 
 </body>
 </html>

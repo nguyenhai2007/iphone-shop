@@ -1,0 +1,180 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết sản phẩm - HẢI APPLE STORE</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f5f7;
+            color: #222;
+        }
+        header {
+            background: #111;
+            color: white;
+            padding: 20px 7%;
+        }
+        header a {
+            color: white;
+            text-decoration: none;
+            font-size: 22px;
+            font-weight: bold;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 35px auto;
+            padding: 25px;
+            background: white;
+            border-radius: 14px;
+        }
+        .product {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 35px;
+            align-items: center;
+        }
+        .product img {
+            width: 100%;
+            max-height: 450px;
+            object-fit: contain;
+        }
+        h1 { font-size: 28px; }
+        .price {
+            color: #e53935;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .description {
+            line-height: 1.7;
+            white-space: pre-line;
+        }
+        button {
+            padding: 14px 25px;
+            border: none;
+            border-radius: 8px;
+            background: #0071e3;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #message {
+            text-align: center;
+            padding: 30px;
+        }
+        @media (max-width: 700px) {
+            .product { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="/">HẢI APPLE STORE</a>
+</header>
+
+<main class="container">
+    <div id="message">Đang tải thông tin sản phẩm...</div>
+    <div id="product"></div>
+</main>
+
+<script>
+    const API_URL = "/api";
+
+    function formatPrice(price) {
+        return Number(price || 0).toLocaleString("vi-VN") + "đ";
+    }
+
+    function escapeHTML(value) {
+        return String(value ?? "").replace(/[&<>"']/g, char => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+        })[char]);
+    }
+
+    async function loadProduct() {
+        const id = new URLSearchParams(location.search).get("id");
+        const message = document.getElementById("message");
+        const container = document.getElementById("product");
+
+        if (!id || !/^\d+$/.test(id) || Number(id) < 1) {
+            message.textContent = "Mã sản phẩm không hợp lệ!";
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/products/${id}`);
+            const product = await response.json();
+
+            if (!response.ok) {
+                throw new Error(product.message || "Không tìm thấy sản phẩm!");
+            }
+
+            const image = escapeHTML(product.image || "");
+            const imageHTML = image
+                ? `<img src="${image}" alt="${escapeHTML(product.name)}"
+                     onerror="this.style.display='none'">`
+                : `<p>Chưa có hình ảnh sản phẩm</p>`;
+
+            message.textContent = "";
+
+            container.innerHTML = `
+                <div class="product">
+                    <div>${imageHTML}</div>
+                    <div>
+                        <h1>${escapeHTML(product.name)}</h1>
+                        <p class="price">${formatPrice(product.price)}</p>
+                        <p><b>Danh mục:</b> ${escapeHTML(product.category)}</p>
+                        <p><b>Số lượng còn:</b> ${Number(product.stock || 0)}</p>
+                        <h3>Mô tả sản phẩm</h3>
+                        <p class="description">${escapeHTML(product.description || "Chưa có mô tả.")}</p>
+                        <button onclick="addToCart()">Thêm vào giỏ hàng</button>
+                        <p><a href="/">← Quay lại cửa hàng</a></p>
+                    </div>
+                </div>
+            `;
+
+            window.currentProduct = product;
+
+        } catch (error) {
+            message.textContent = error.message;
+        }
+    }
+
+    function addToCart() {
+        if (!window.currentProduct) return;
+
+        let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+
+        const product = window.currentProduct;
+        const existing = cart.find(item =>
+            Number(item.id || item.product_id) === Number(product.id)
+        );
+
+        if (existing) {
+            existing.quantity = Number(existing.quantity || 1) + 1;
+        } else {
+            cart.push({
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                image: product.image,
+                quantity: 1
+            });
+        }
+
+        localStorage.setItem("cart", JSON.stringify(cart));
+        alert("Đã thêm sản phẩm vào giỏ hàng!");
+    }
+
+    loadProduct();
+</script>
+
+</body>
+</html>
