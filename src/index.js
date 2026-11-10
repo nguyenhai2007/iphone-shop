@@ -1,6 +1,8 @@
+
 // ============================================
 // HẢI APPLE STORE - BACKEND SERVER
 // EXPRESS + POSTGRESQL + JWT
+// LOCAL + VERCEL
 // ============================================
 
 require("dotenv").config();
@@ -15,7 +17,11 @@ const { pool, initDatabase } = require("./database");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const JWT_SECRET = process.env.JWT_SECRET || "iphone-shop-dev-secret-change-me";
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET) {
+    console.warn("CANH BAO: Chua cau hinh JWT_SECRET!");
+}
 
 // ============================================
 // MIDDLEWARE
@@ -41,6 +47,10 @@ function sendError(res, status, message) {
 }
 
 function createToken(user) {
+    if (!JWT_SECRET) {
+        throw new Error("Chua cau hinh JWT_SECRET!");
+    }
+
     return jwt.sign(
         {
             id: user.id,
@@ -68,10 +78,11 @@ function verifyToken(req, res, next) {
         return sendError(res, 401, "Vui lòng đăng nhập!");
     }
 
-    const token = authorization.split(" ")[1];
-
     try {
+        const token = authorization.split(" ")[1];
+
         req.user = jwt.verify(token, JWT_SECRET);
+
         next();
     } catch (error) {
         return sendError(
@@ -95,15 +106,18 @@ function verifyAdmin(req, res, next) {
 }
 
 function validId(value) {
-    return /^\d+$/.test(String(value)) && BigInt(value) > 0n;
+    return /^\d+$/.test(String(value)) &&
+        BigInt(value) > 0n;
 }
 
 function validPrice(value) {
-    return value !== "" &&
+    return (
+        value !== "" &&
         value !== null &&
         value !== undefined &&
         Number.isFinite(Number(value)) &&
-        Number(value) >= 0;
+        Number(value) >= 0
+    );
 }
 
 function normalizeProduct(product) {
@@ -131,7 +145,8 @@ app.get("/api", (req, res) => {
     res.json({
         success: true,
         message: "HẢI APPLE STORE API đang hoạt động!",
-        version: "3.0"
+        version: "4.0",
+        database: "PostgreSQL"
     });
 });
 
@@ -170,7 +185,7 @@ app.post("/api/register", async (req, res) => {
             [email]
         );
 
-        if (existingUser.rows.length > 0) {
+        if (existingUser.rowCount > 0) {
             return sendError(res, 409, "Email đã được đăng ký!");
         }
 
@@ -477,12 +492,14 @@ app.put("/api/products/:id", verifyToken, verifyAdmin, async (req, res) => {
 // ============================================
 
 app.delete("/api/products/:id", verifyToken, verifyAdmin, async (req, res) => {
-    const client = await pool.connect();
+    let client;
 
     try {
         if (!validId(req.params.id)) {
             return sendError(res, 400, "ID sản phẩm không hợp lệ!");
         }
+
+        client = await pool.connect();
 
         const product = await client.query(
             "SELECT id FROM products WHERE id = $1",
@@ -522,7 +539,7 @@ app.delete("/api/products/:id", verifyToken, verifyAdmin, async (req, res) => {
         console.error("DELETE PRODUCT ERROR:", error);
         sendError(res, 500, "Không thể xóa sản phẩm!");
     } finally {
-        client.release();
+        if (client) client.release();
     }
 });
 
@@ -531,7 +548,7 @@ app.delete("/api/products/:id", verifyToken, verifyAdmin, async (req, res) => {
 // ============================================
 
 app.post("/api/orders", verifyToken, async (req, res) => {
-    const client = await pool.connect();
+    let client;
 
     try {
         const {
@@ -578,6 +595,8 @@ app.post("/api/orders", verifyToken, async (req, res) => {
                 "Giỏ hàng có quá nhiều sản phẩm!"
             );
         }
+
+        client = await pool.connect();
 
         await client.query("BEGIN");
 
@@ -627,15 +646,8 @@ app.post("/api/orders", verifyToken, async (req, res) => {
 
         const orderResult = await client.query(
             `INSERT INTO orders (
-                user_id,
-                fullname,
-                phone,
-                address,
-                payment,
-                total,
-                status,
-                payment_status,
-                note
+                user_id, fullname, phone, address,
+                payment, total, status, payment_status, note
             )
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
             RETURNING id`,
@@ -659,11 +671,7 @@ app.post("/api/orders", verifyToken, async (req, res) => {
         for (const item of orderProducts) {
             await client.query(
                 `INSERT INTO order_items (
-                    order_id,
-                    product_id,
-                    product_name,
-                    price,
-                    quantity
+                    order_id, product_id, product_name, price, quantity
                 )
                 VALUES ($1, $2, $3, $4, $5)`,
                 [
@@ -700,7 +708,10 @@ app.post("/api/orders", verifyToken, async (req, res) => {
         });
 
     } catch (error) {
-        await client.query("ROLLBACK");
+        if (client) {
+            await client.query("ROLLBACK");
+        }
+
         console.error("CREATE ORDER ERROR:", error);
 
         sendError(
@@ -709,7 +720,7 @@ app.post("/api/orders", verifyToken, async (req, res) => {
             error.message || "Không thể tạo đơn hàng!"
         );
     } finally {
-        client.release();
+        if (client) client.release();
     }
 });
 
@@ -723,11 +734,7 @@ app.post(
     async (req, res) => {
         try {
             if (!validId(req.params.id)) {
-                return sendError(
-                    res,
-                    400,
-                    "Mã đơn hàng không hợp lệ!"
-                );
+                return sendError(res, 400, "Mã đơn hàng không hợp lệ!");
             }
 
             const result = await pool.query(
@@ -740,11 +747,7 @@ app.post(
             const order = result.rows[0];
 
             if (!order) {
-                return sendError(
-                    res,
-                    404,
-                    "Không tìm thấy đơn hàng!"
-                );
+                return sendError(res, 404, "Không tìm thấy đơn hàng!");
             }
 
             if (order.payment !== "BANK") {
@@ -873,7 +876,7 @@ app.put(
     verifyToken,
     verifyAdmin,
     async (req, res) => {
-        const client = await pool.connect();
+        let client;
 
         try {
             const allowedStatuses = [
@@ -887,11 +890,7 @@ app.put(
             const status = String(req.body.status || "");
 
             if (!validId(req.params.id)) {
-                return sendError(
-                    res,
-                    400,
-                    "Mã đơn hàng không hợp lệ!"
-                );
+                return sendError(res, 400, "Mã đơn hàng không hợp lệ!");
             }
 
             if (!allowedStatuses.includes(status)) {
@@ -901,6 +900,8 @@ app.put(
                     "Trạng thái đơn hàng không hợp lệ!"
                 );
             }
+
+            client = await pool.connect();
 
             await client.query("BEGIN");
 
@@ -913,6 +914,7 @@ app.put(
 
             if (!order) {
                 await client.query("ROLLBACK");
+
                 return sendError(
                     res,
                     404,
@@ -922,6 +924,7 @@ app.put(
 
             if (order.status === "Đã hủy" && status !== "Đã hủy") {
                 await client.query("ROLLBACK");
+
                 return sendError(
                     res,
                     400,
@@ -966,15 +969,19 @@ app.put(
             });
 
         } catch (error) {
-            await client.query("ROLLBACK");
+            if (client) {
+                await client.query("ROLLBACK");
+            }
+
             console.error("UPDATE ORDER STATUS ERROR:", error);
+
             sendError(
                 res,
                 500,
                 "Không thể cập nhật trạng thái đơn hàng!"
             );
         } finally {
-            client.release();
+            if (client) client.release();
         }
     }
 );
@@ -999,11 +1006,7 @@ app.put(
             const status = String(req.body.payment_status || "");
 
             if (!validId(req.params.id)) {
-                return sendError(
-                    res,
-                    400,
-                    "Mã đơn hàng không hợp lệ!"
-                );
+                return sendError(res, 400, "Mã đơn hàng không hợp lệ!");
             }
 
             if (!allowedStatuses.includes(status)) {
@@ -1225,11 +1228,7 @@ app.post(
 
             await pool.query(
                 `INSERT INTO reviews (
-                    product_id,
-                    user_id,
-                    order_id,
-                    rating,
-                    comment
+                    product_id, user_id, order_id, rating, comment
                 )
                 VALUES ($1, $2, $3, $4, $5)`,
                 [
@@ -1263,12 +1262,16 @@ app.post(
 );
 
 // ============================================
-// XỬ LÝ LỖI
+// XỬ LÝ ĐƯỜNG DẪN KHÔNG TỒN TẠI
 // ============================================
 
 app.use((req, res) => {
     sendError(res, 404, "Không tìm thấy đường dẫn yêu cầu!");
 });
+
+// ============================================
+// XỬ LÝ LỖI
+// ============================================
 
 app.use((error, req, res, next) => {
     console.error("SERVER ERROR:", error);
@@ -1285,7 +1288,7 @@ app.use((error, req, res, next) => {
 });
 
 // ============================================
-// KHỞI ĐỘNG SERVER
+// KHỞI ĐỘNG LOCAL VÀ EXPORT CHO VERCEL
 // ============================================
 
 async function startServer() {
@@ -1307,4 +1310,8 @@ async function startServer() {
     }
 }
 
-startServer();
+if (require.main === module) {
+    startServer();
+}
+
+module.exports = app;
