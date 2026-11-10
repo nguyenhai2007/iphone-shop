@@ -1,0 +1,13 @@
+
+{
+  "rewrites": [
+    {
+      "source": "/api",
+      "destination": "https://iphone-shop-1.onrender.com/api"
+    },
+    {
+      "source": "/api/:path*",
+      "destination": "https://iphone-shop-1.onrender.com/api/:path*"
+    }
+  ]
+}
